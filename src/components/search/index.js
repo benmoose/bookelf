@@ -1,6 +1,8 @@
 import React from 'react'
-import { Classes, TextArea, Callout } from '@blueprintjs/core'
+import { Classes, TextArea, Callout, Card } from '@blueprintjs/core'
 import debounce from 'lodash.debounce'
+
+import Result from './components/result'
 
 import { parseBooks, search } from '../../utils'
 
@@ -8,62 +10,73 @@ class Search extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      books: '',
+      value: '',
+      books: [],
       data: [],
       loading: false
     }
     this.handleChange = this.handleChange.bind(this)
-    this.getSearchResults = this.getSearchResults.bind(this)
+    this.getSearchResults = debounce(this.getSearchResults.bind(this), 1500)
   }
 
   handleChange (e) {
-    this.setState({ books: e.target.value })
-    const books = parseBooks(e.target.value)
-    const _search = debounce(this.getSearchResults, 2000)
-    _search(books)
+    this.setState({
+      value: e.target.value,
+      books: parseBooks(e.target.value),
+      loading: true
+    }, () => {
+      const books = parseBooks(this.state.value)
+      this.getSearchResults(books)
+    })
   }
 
   getSearchResults (books) {
-    this.setState({ loading: true })
-    Promise.all(books.map((book, i) => search(book.title, book.author)))
+    Promise.all(
+      books.map((book, i) => search(book.title, book.author))
+    )
       .then(data => this.setState({ data, loading: false }))
+      .catch(() => this.setState({ loading: false }))
   }
 
   render () {
     return (
       <React.Fragment>
-        <Callout className='mb d-flex justify-content-between'>
-          <span>
-            {
-              this.state.loading ? 'Loading...' : 'One book per line please :)'
-            }
-          </span>
-          <span className='small'>Only walker books are searched</span>
+        <Callout
+          icon='info-sign'
+          className='mb'
+        >
+          <div className='d-flex justify-content-between'>
+            <span>One book per line please :)</span>
+            <span className='small'>Only walker books are searched</span>
+          </div>
         </Callout>
+
         <div className='row'>
           <div className='col-6'>
             <TextArea
               large
+              value={this.state.value}
               onChange={this.handleChange}
               className={Classes.FILL}
-              style={{ minHeight: '400px' }}
+              style={{ height: '300px' }}
             />
           </div>
           <div className='col-6'>
-            {
-              this.state.data.map(data => {
-                const items = data.items
-                if (!items) return <p>No results</p>
-                const isbn13 = items[0].volumeInfo.industryIdentifiers
-                  .filter(isbn => isbn.type === 'ISBN_13')[0]
-                return (
-                  <p>
-                    <span className='pr small'>{items[0].volumeInfo.title}</span>
-                    <span><strong>ISBN13 {isbn13 && isbn13.identifier}</strong></span>
-                  </p>
-                )
-              })
-            }
+            <Card className='h-100'>
+              {
+                this.state.books.map((book, i) => {
+                  const data = this.state.data[i]
+                  return (
+                    <Result
+                      key={i}
+                      book={book}
+                      data={data}
+                      loading={this.state.loading}
+                    />
+                  )
+                })
+              }
+            </Card>
           </div>
         </div>
       </React.Fragment>

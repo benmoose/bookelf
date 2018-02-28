@@ -1,11 +1,12 @@
 import axios from 'axios'
 
+export const parseLine = (line) => {
+  const parts = line.split('::').map(part => (part || '').trim())
+  return { title: parts[0], author: parts[1] }
+}
+
 export const parseBooks = (text) => {
-  const lines = text.split('\n')
-    .map(line => {
-      const parts = line.split('::')
-      return { title: parts[0], author: parts[1] }
-    })
+  const lines = text.split('\n').map(parseLine)
   return lines.filter(book => !!book.title)
 }
 

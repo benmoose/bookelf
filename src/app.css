@@ -1,0 +1,15 @@
+.small {
+  opacity: .65;
+}
+
+.pr {
+  padding-right: 10px;
+}
+
+.pt {
+  padding-top: 20px;
+}
+
+.mb {
+  margin-bottom: 20px;
+}

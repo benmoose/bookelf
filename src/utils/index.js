@@ -10,12 +10,19 @@ export const parseBooks = (text) => {
   return lines.filter(book => !!book.title)
 }
 
-export const search = (title, author) => {
-  const authorParam = author && `+inauthor:${author}`
+export const search = (title, author = null) => {
+  const titleParam = `intitle:${title}`
+  const authorParam = `inauthor:${author}`
+  const publisherParam = `inpublisher:Walker`
+
+  const q = [titleParam, publisherParam]
+  if (author) q.push(authorParam)
+
   return axios.get('https://www.googleapis.com/books/v1/volumes/', {
     params: {
-      key: process.env.REACT_APP_GOOGLE_API_KEY,
-      q: `intitle:${title}+inpublisher:Walker${authorParam}`
+      q: q.join('+'),
+      orderBy: 'relevance',
+      maxResults: 6
     }
   })
     .then(res => res.data)

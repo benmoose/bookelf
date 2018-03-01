@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 import { Classes, TextArea, Callout, Card } from '@blueprintjs/core'
 import debounce from 'lodash.debounce'
 
@@ -12,6 +13,7 @@ class Search extends React.Component {
     this.state = {
       value: '',
       books: [],
+      cachedBooks: [],
       data: [],
       loading: false
     }
@@ -34,11 +36,16 @@ class Search extends React.Component {
     Promise.all(
       books.map((book, i) => search(book.title, book.author))
     )
-      .then(data => this.setState({ data, loading: false }))
+      .then(data => this.setState({
+        data,
+        cachedBooks: books,
+        loading: false
+      }))
       .catch(() => this.setState({ loading: false }))
   }
 
   render () {
+    console.log(this.state)
     return (
       <React.Fragment>
         <Callout
@@ -61,7 +68,7 @@ class Search extends React.Component {
               style={{ height: '300px' }}
             />
           </div>
-          <div className='col-6'>
+          <div className={classnames('col-6', { loading: this.state.loading })}>
             <Card className='h-100'>
               {
                 this.state.books.map((book, i) => {

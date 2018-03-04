@@ -53,7 +53,7 @@ const Result = ({ book, data, loading, requestShowToast }) => {
                 isbn13
                   ? (
                     <Tooltip
-                      hoverOpenDelay={0}
+                      hoverOpenDelay={100}
                       content='Click to copy ISBN'
                       position={Position.BOTTOM}
                     >

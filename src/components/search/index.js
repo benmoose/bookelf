@@ -65,7 +65,7 @@ class Search extends React.Component {
         >
           <div className='d-flex justify-content-between'>
             <span>One book title one per line <code>title [:: author]</code></span>
-            <span className='pt-text-muted'>Only <a href='http://www.walker.co.uk/'>Walker</a> books are searched</span>
+            <span className='pt-text-muted'>Only <a href='http://www.walker.co.uk/'>Walker</a> books are searched 🐻</span>
           </div>
         </Callout>
 

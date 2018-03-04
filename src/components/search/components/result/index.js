@@ -1,18 +1,37 @@
 import React from 'react'
 import styled from 'styled-components'
+import classnames from 'classnames'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Classes, Button, Popover, Position, Tag, Spinner, Tooltip } from '@blueprintjs/core'
 
+import Placeholder from '../../../../static/not-found.svg'
 import OtherBooks from './components/otherBooks'
 
 const Container = styled.article`
-  padding-bottom: 5px;
+  margin-bottom: 15px;
 `
 
 const Img = styled.img`
   object-fit: contain;
-  padding-right: 10px;
-  height: 100%;
+  width: 64px;
+`
+
+const Right = styled.div`
+  flex-shrink: 0;
+`
+
+const BookMeta = styled.div`
+  padding: 0 15px;
+`
+
+const BookMetaTitle = styled.h6`
+  display: inline;
+`
+
+const BookMetaTitleContainer = styled.div`
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #f6f7f8;
 `
 
 const Result = ({ book, data, loading, requestShowToast }) => {
@@ -39,14 +58,18 @@ const Result = ({ book, data, loading, requestShowToast }) => {
   return (
     <Container className='d-flex justify-content-between'>
       <div className='d-flex justify-content-start'>
-        <Img src={thumbnail} width={64} />
         <div>
-          <div className='pr mb-1'>
-            <div className='pt-text-muted'>{item.volumeInfo.title}, <em>{item.volumeInfo.authors.join(', ')}</em></div>
+          <Img src={thumbnail || Placeholder} />
+        </div>
+        <BookMeta>
+          <BookMetaTitleContainer>
+            <div>
+              <BookMetaTitle>{item.volumeInfo.title}</BookMetaTitle>, <em>{item.volumeInfo.authors.join(', ')}</em>
+            </div>
             <div>{item.volumeInfo.categories && item.volumeInfo.categories.map(category => (
               <Tag key={category}>{category}</Tag>
             ))}</div>
-          </div>
+          </BookMetaTitleContainer>
           <CopyToClipboard text={isbn13 ? isbn13.identifier : ''}>
             <div>
               {
@@ -55,20 +78,24 @@ const Result = ({ book, data, loading, requestShowToast }) => {
                     <Tooltip
                       hoverOpenDelay={100}
                       content='Click to copy ISBN'
-                      position={Position.BOTTOM}
+                      position={Position.RIGHT}
                     >
-                      <Button onClick={showCopiedToast}>ISBN {isbn13.identifier}</Button>
+                      <Button
+                        className={classnames(Classes.MINIMAL, Classes.SMALL)}
+                        onClick={showCopiedToast}
+                      >ISBN {isbn13.identifier}
+                      </Button>
                     </Tooltip>
                   )
                   : <span>{!loading && 'No ISBN found'}</span>
               }
             </div>
           </CopyToClipboard>
-        </div>
+        </BookMeta>
       </div>
       {
         hasOtherResult && (
-          <div>
+          <Right>
             <Popover
               content={(
                 <OtherBooks
@@ -82,9 +109,12 @@ const Result = ({ book, data, loading, requestShowToast }) => {
                 flip: { enabled: false }
               }}
             >
-              <Button rightIcon='caret-down'>Other results</Button>
+              <Button
+                rightIcon='caret-down'
+                className={Classes.SMALL}
+              >Other results</Button>
             </Popover>
-          </div>
+          </Right>
         )
       }
     </Container>

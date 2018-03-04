@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { Position, Intent, Toaster } from '@blueprintjs/core'
 
 const Container = styled.div`
   padding: 15px;
@@ -12,18 +11,8 @@ const HelpText = styled.small`
   display: block;
 `
 
-const toaster = Toaster.create({ position: Position.RIGHT_TOP })
-
-const OtherBooks = ({ items }) => {
-  const showToast = (isbn) => (e) => {
-    if (isbn) {
-      toaster.show({
-        message: `Copied ISBN ${isbn.identifier} :)`,
-        intent: Intent.NONE,
-        icon: 'tick'
-      })
-    }
-  }
+const OtherBooks = ({ items, requestShowToast }) => {
+  const showCopiedToast = () => requestShowToast('ISBN Copied')
 
   return (
     <Container style={{ maxWidth: '600px' }}>
@@ -43,7 +32,7 @@ const OtherBooks = ({ items }) => {
                   .filter(isbn => isbn.type === 'ISBN_13')[0]
               return (
                 <CopyToClipboard key={item.id} text={isbn ? isbn.identifier : ''}>
-                  <tr onClick={showToast(isbn)}>
+                  <tr onClick={showCopiedToast}>
                     <td>{item.volumeInfo.title}</td>
                     <td>{isbn ? isbn.identifier : 'Not found'}</td>
                   </tr>

@@ -6,10 +6,6 @@ body {
   height: 100%;
 }
 
-.small {
-  opacity: .65;
-}
-
 .pr {
   padding-right: 10px;
 }
@@ -20,6 +16,10 @@ body {
 
 .mb {
   margin-bottom: 20px;
+}
+
+.mb-1 {
+  margin-bottom: 8px;
 }
 
 .loading {

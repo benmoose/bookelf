@@ -3,6 +3,7 @@ import Nav from './components/nav'
 import Search from './components/search'
 
 import HttpsDialog from './components/httpsDialog'
+import Attribution from './components/attribution'
 
 import './app.css'
 import './bootstrap-grid.css'
@@ -40,6 +41,7 @@ class App extends React.Component {
         <div className='container-fluid pt'>
           <Search />
         </div>
+        <Attribution />
       </React.Fragment>
     )
   }

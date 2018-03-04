@@ -1,13 +1,21 @@
 import React from 'react'
+import styled from 'styled-components'
+import Elf from '../../static/elf.svg'
 import { Alignment, Navbar, NavbarGroup, NavbarHeading, NavbarDivider } from '@blueprintjs/core'
+
+const Image = styled.img`
+  padding: 10px 0;
+  height: 100%;
+`
 
 const Nav = () => {
   return (
     <Navbar>
-      <NavbarGroup align={Alignment.LEFT}>
+      <NavbarGroup align={Alignment.CENTER}>
+        <Image src={Elf} />
         <NavbarHeading>BookELF</NavbarHeading>
         <NavbarDivider />
-        <span>Powered by Google Books</span>
+        <small>Powered by Google Books</small>
       </NavbarGroup>
     </Navbar>
   )

@@ -1,11 +1,13 @@
 import React from 'react'
 import classnames from 'classnames'
-import { Classes, TextArea, Callout, Card } from '@blueprintjs/core'
+import { Classes, TextArea, Callout, Card, Toaster, Position, Intent } from '@blueprintjs/core'
 import debounce from 'lodash.debounce'
 
 import Result from './components/result'
 
 import { parseBooks, search } from '../../utils'
+
+const toaster = Toaster.create({ position: Position.RIGHT_TOP })
 
 class Search extends React.Component {
   constructor (props) {
@@ -17,8 +19,18 @@ class Search extends React.Component {
       data: [],
       loading: false
     }
+
     this.handleChange = this.handleChange.bind(this)
+    this.showToast = this.showToast.bind(this)
     this.getSearchResults = debounce(this.getSearchResults.bind(this), 1500)
+  }
+
+  showToast (message, icon = 'tick') {
+    toaster.show({
+      message,
+      icon,
+      intent: Intent.NONE
+    })
   }
 
   handleChange (e) {
@@ -45,7 +57,6 @@ class Search extends React.Component {
   }
 
   render () {
-    console.log(this.state)
     return (
       <React.Fragment>
         <Callout
@@ -53,8 +64,8 @@ class Search extends React.Component {
           className='mb'
         >
           <div className='d-flex justify-content-between'>
-            <span>One book per line please :)</span>
-            <span className='small'>Only walker books are searched</span>
+            <span>One book title one per line <code>title [:: author]</code></span>
+            <span className='pt-text-muted'>Only <a href='http://www.walker.co.uk/'>Walker</a> books are searched</span>
           </div>
         </Callout>
 
@@ -79,6 +90,7 @@ class Search extends React.Component {
                       book={book}
                       data={data}
                       loading={this.state.loading}
+                      requestShowToast={this.showToast}
                     />
                   )
                 })
